@@ -1,0 +1,175 @@
+import cv2
+import numpy as np
+from pygame import mixer
+from gtts import gTTS
+import playsound
+import time
+import os
+import pyttsx3
+from time import gmtime,strftime
+from datetime import datetime 
+
+
+mixer.init()
+
+a = datetime.now()
+value1=a.strftime('%H')
+
+
+
+
+if(value1<str(12)):
+    time_text="Good morning"
+    print(time_text)
+elif(str(12)<=value1<str(17)):
+    time_text="Good Afternoon"
+    print(time_text)
+elif(str(17)<=value1<str(22)):
+    time_text="Good Evening"
+else:
+    time_text="Good NIGHt"
+
+#localtime = time.localtime(time.time())
+#print(localtime)
+
+
+engine = pyttsx3.init();
+
+
+
+
+count=0
+recognizer = cv2.face.LBPHFaceRecognizer_create()
+recognizer.read("recognizer/trainingData.yml")
+
+faceCascade = cv2.CascadeClassifier('frontalface.xml');
+
+name = ''
+mylanguage='en'
+
+cam = cv2.VideoCapture(0)
+ret, im =cam.read()
+#font = cv2.putText(cv2.FONT_HERSHEY_SIMPLEX, 1, 1, 0, 1, 1)
+
+#ext(...)
+  
+font = cv2.FONT_HERSHEY_SIMPLEX
+fontScale=0.6
+fontColor=(0,255,255)
+#cv2.putText()
+
+
+
+while True:
+    
+    ret, im =cam.read()
+    gray=cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+    faces=faceCascade.detectMultiScale(gray, 1.2,5)
+
+    
+   # faceNp = np.array(im,'uint8')
+    for(x,y,w,h) in faces:
+        cv2.rectangle(im,(x,y),(x+w,y+h),(225,0,0),2)
+        Id, conf = recognizer.predict(gray[y:y+h,x:x+w])
+        if(conf<50):
+           
+            if(Id == 1):
+
+                name ="Leelark"
+                mytext="hello"+name
+                
+                engine.say("hello" +name)
+               # engine.say("you are awesome")
+                engine.say(time_text)
+                #myobj=gTTS(text=mytext,lang=mylanguage,slow=False)
+                #mysound=name.mp3
+                #myobj.save(str(count)+"name.mp3")
+                #playsound.playsound(str(count)+"name.mp3",True)
+                engine.setProperty('volume',1.0)
+                engine.runAndWait()
+                
+                count+=1
+                
+                
+            elif(Id == 2):
+                #break;
+                #ret, im =  cam.read()
+               
+                name ="Hitashu"
+                mytext="hello"+name
+
+               
+                #myobj=gTTS(text=mytext,lang=mylanguage,slow=False)
+                     #mysound=name.mp3
+                #myobj.save(str(count)+"name.mp3")
+                #playsound.playsound(str(count)+"name.mp3",True)
+
+                engine.say("hello" +name)
+                engine.say(time_text)
+                engine.say("you are awesome")
+                engine.setProperty('volume',0.9)
+               # break;
+                engine.runAndWait()
+                
+                count+=1
+                
+            elif(Id == 3):
+               
+                name ="SM SHARMA"
+                mytext="hello"+name
+
+               
+                #myobj=gTTS(text=mytext,lang=mylanguage,slow=False)
+                     #mysound=name.mp3
+                #myobj.save(str(count)+"name.mp3")
+                #playsound.playsound(str(count)+"name.mp3",True)
+                engine.say("hello" +name)
+                engine.say(time_text)
+                engine.setProperty('volume',0.9)
+                engine.runAndWait()
+                count+=1
+
+            elif(Id==5):
+                name = "aditi"
+
+                myText = "hello"+name;
+                engine.say("hello"+name)
+                engine.say(time_text)
+                engine.setProperty('volume',0.9)
+                engine.runAndWait()
+                count+=1
+                
+            elif(Id==6):
+                name = "Shashi"
+                myText = "hello"+name;
+                engine.say("hello"+name)
+                engine.say(time_text)
+                engine.setProperty('volume',0.9)
+                engine.runAndWait()
+                count+=1
+                
+            elif(Id==7):
+                name = "Prateek"
+                myText = "hello"+name;
+                engine.say("hello"+name)
+                engine.say(time_text)
+                engine.setProperty('volume',0.9)
+                engine.runAndWait()
+                count+=1
+
+        else:
+            Id="Unknown"
+            name = "how can i help you"
+            engine.say("hello"+name)
+            engine.say(time_text)
+            engine.setProperty('volume',0.9)
+            engine.runAndWait()
+            count+=1
+        cv2.putText(im,name, (x,y+h), font, fontScale, fontColor)
+        #qplaysound.playsound(str(count)+"name.mp3",True)
+    #cv2.putText(im,str(Id), (x,y+h),font, 13, (0,255,255), 3, cv.LINE_AA)
+    cv2.imshow('im',im) 
+    if cv2.waitKey(10) & 0xFF == ord('q'):
+        break
+cam.release()
+cv2.destroyAllWindows()
