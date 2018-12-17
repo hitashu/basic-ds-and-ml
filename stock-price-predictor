@@ -1,0 +1,41 @@
+#features - input data eg for a prediction maodel age name etx are feature 
+#the answer or the predicted model is called as the label
+#take label on y axis and feature on the x axis
+import pandas as pd 
+import quandl
+import math
+import numpy as np #python doesnt have array so by numpy  we can use arrays in python
+
+from sklearn import preprocessing, cross_validation, svm
+from sklearn.linear_model import LinearRegression
+df=quandl.get('WIKI/GOOGL')
+print(len(df))
+df = df[['Adj. High','Adj. Open','Adj. Close','Adj. Volume']]
+
+df['high_pct'] = ((df['Adj. High'] - df['Adj. Close'])/df['Adj. Close'])*100
+df['open_pct'] = ((df['Adj. Close'] - df['Adj. Open'])/df['Adj. Open'])*100
+df = df[['Adj. Close','high_pct','open_pct','Adj. Volume']]
+
+forecast_col = 'Adj. Close'
+df.fillna(9999,inplace= True)#replace nan data with something
+forecast_out = int(math.ceil(0.001*len(df)))#change the value to find the price of next day/month etc . 
+print(forecast_out)
+df['label'] = df[forecast_col].shift(-forecast_out)
+df.dropna(inplace=True)
+
+X = np.array(df.drop(['label'],1))#as x is a feature so labels are dropped and 1 indicates that the coloumn 1 is selected as default and the default index ie 0 is not taken
+y = np.array(df['label'])
+
+X = preprocessing.scale(X)#scaling x before feeding it to the classifier and classifier is used on real time prediction
+# the above is used when along with scaling we also scale the pretrained values
+y = np.array(df['label'])
+
+x_train, x_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size = 0.2)#mix the data (shuffle) while keeping the x and y connected till the point accuracy is lost
+#test size 0.2 indicated 20 % of the size of data is used
+clf = LinearRegression(n_jobs = -1)#this is an algorithm , we can also use svm.SVR but it is less accurate
+clf.fit(x_train, y_train)
+accuracy = clf.score(x_test, y_test)
+
+#the above 2 are meaningless in the given dataset as we dont use same data to test as the data we ahve trained
+print(accuracy*100)
+
