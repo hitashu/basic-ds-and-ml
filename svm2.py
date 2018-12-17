@@ -1,0 +1,93 @@
+import numpy as np 
+import pandas as pd 
+import matplotlib.pyplot as plt 
+from matplotlib import style
+
+style.use('ggplot')
+
+
+data_dict ={1 : np.array[[1,6],[2,5],[7,8]] , 2 : np.array[[-1,7],[3,8],[8,4]]}
+
+
+class svm:
+	def __init__(self, visualization = True):
+		self.visualization = visualization
+		self.colors = {1 : 'r', 2 : 'b'}
+
+		if visualization:
+			self.fig = plt.figure()
+			self.ax = self.fig.add_subplot(1,1,1)
+
+	def fit(self, data):
+		self.data = data
+		opt_dict = {}
+
+		all_data = []
+
+		for i in self.data:
+			for j in data[i]:
+				for k in j:
+					all_data.append(k)
+
+		self.max_value = max(all_data)
+		self.min_value = min(all_data)
+
+		all_data = none
+
+		step_sizes = [self.max_value*0.1, self.max_value*0.01, self.max_value*0.001]
+
+		latest_optimum = self.max_value*10
+
+		b_range_multiple = 5
+		b_range = 5
+
+
+		for i in step_sizes:
+			w = np.array(latest_optimum, latest_optimum)
+
+			optimized = False
+
+			while not optimized:
+
+				for b in np.arange(-1(self.max_value*b_range_multiple),(self.max_value*b_range_multiple), step = b_range):
+					for t in transform:
+						w_t = t*w
+
+						found_option = True
+
+						for a in self.data:
+							for c in self.data[a]:
+								yi =a
+
+								if not (yi*(np.dot(w_t,c) + self.b)):
+									found_option = False
+
+						if found_option:
+							opt_dict[np.linalg.norm(w_t)] = [w_t, b]
+
+			if w[0] < 0:
+                    optimized = True
+                    print('Optimized a step.')
+                else:
+                    w = w - step
+
+            norms = sorted([n for n in opt_dict])
+            #||w|| : [w,b]
+            opt_choice = opt_dict[norms[0]]
+            self.w = opt_choice[0]
+            self.b = opt_choice[1]
+            latest_optimum = opt_choice[0][0]+step*2			
+
+
+		
+
+
+	def predict(self, features):
+		self.features = features
+
+		classifier = (np.sign(np.dot(np.array(features), self.w) + self.b))
+
+		return classifier
+
+
+
