@@ -1,0 +1,59 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar  1 11:07:45 2018
+
+#@author: Mike
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from payment_prediction_model import PaymentClassifier
+#from sklearn.preprocessing import LabelEncoder
+#from datetime import date
+
+
+dataset =  pd.read_csv('UCI_Credit_Card.csv')
+
+X =  dataset.iloc[:20 , 0:34].values
+
+Y =  dataset.iloc[:20 , 24].values    
+
+#labelEncoder_Y = LabelEncoder()
+#Y  =  labelEncoder_Y.fit_transform(Y)
+#labelEncoder_col_2 = LabelEncoder()
+#X[:,2] = labelEncoder_col_2.fit_transform(X[:,2])
+#labelEncoder_col_3 = LabelEncoder()
+#X[:,3] = labelEncoder_col_3.fit_transform(X[:, 3])
+#labelEncoder_col_4 = LabelEncoder()
+#X[:,4] = labelEncoder_col_4.fit_transform(X[:,4])
+
+from sklearn.cross_validation import train_test_split
+
+X_train , X_test, Y_train , Y_test = train_test_split(X , Y , test_size = 0.2, random_state=0)
+
+from sklearn.preprocessing import StandardScaler
+StandardScaler = StandardScaler()
+X_train = StandardScaler.fit_transform(X_train)
+X_test = StandardScaler.transform(X_test)
+
+
+paymentClassifier =  PaymentClassifier()
+
+paymentClassifier.build_classifier(X_train , Y_train)
+
+Y_predict  =  paymentClassifier.predict(X_test)
+
+classifier_to_save = paymentClassifier.get_model().to_yaml()
+
+with open("pay_or_not_model.yaml", "w") as yaml_file:
+    yaml_file.write(classifier_to_save)
+# serialize weights to HDF5
+paymentClassifier.get_model().save_weights("pay_or_not_model_weights.h5")
+print("Saved model to disk")
+
+
+
+
+
+
+
