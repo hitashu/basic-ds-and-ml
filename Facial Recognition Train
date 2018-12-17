@@ -1,0 +1,41 @@
+import os
+import cv2
+import numpy as np
+from PIL import Image
+
+
+#recognizer = cv2.createLBPHFaceRecognizer()
+recognizer = cv2.face.LBPHFaceRecognizer_create()
+detector = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+
+id=0
+def getimgidface(path):
+	imgpaths = [os.path.join(path,f) for f in os.listdir(path)]
+	faces=[]
+	ids=[]
+
+	for i in imgpaths:
+		pilImage = Image.open(i).convert('L')
+		imagenp = np.array(pilImage,'uint8')
+		idd = int(os.path.split(i)[-1].split(".")[1])
+		faced = detector.detectMultiScale(imagenp)
+		
+		for(x,y,w,h) in faced:
+			faces.append(imageNp[x:x+w,y:y+h])
+			ids.append(idd)
+		return faces,ids
+
+faces,ids = getimgidface('dataset')
+recognizer.train(faces,np.array(ids))
+recognizer.save('recognizer/trainingData.yml')
+cv2.destroyAllWindows
+
+
+
+#create a recognizer
+	#convert the path in numpyarray 
+	
+	#now to get id,develop a method 
+	#defien the path 
+	#now split the the path to obtain username and id
+	#store username and id in 2 variables 
